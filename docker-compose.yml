@@ -1,0 +1,33 @@
+version: '2'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/example_rails
+    ports:
+      - 3380:3000
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    links:
+      - db
+    environment:  
+      RAILS_ENV: development
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    container_name: "example_rails_app_development"
+  db:
+    image: mysql:5.5
+    volumes:
+      - ./mysql/mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    container_name: "example_rails_db_development"
+    ports:
+      - "3316:3306"
+    environment:
+      MYSQL_DATABASE: example_rails_development
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
