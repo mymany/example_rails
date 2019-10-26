@@ -32,4 +32,22 @@ RSpec.describe "Items", type: :request do
       @user.delete
     end
   end
+
+  describe "PUT /items", type: :put do
+    it "レスポンスのデータが正しいこと" do
+      @item = FactoryBot.create(:item)
+      req_params = {
+        user_id: @item.user.id,
+        name: 'dummy item put',
+        point: 200
+      }
+      put "/api/v1/items/" + @item.id.to_s, params: { item: req_params }
+      @subject_item = JSON.parse(response.body)
+      expect(@subject_item["id"]).to be_truthy
+      expect(@subject_item["name"]).to eq req_params[:name]
+      expect(@subject_item["point"]).to eq req_params[:point]
+      expect(@subject_item["user_id"]).to eq req_params[:user_id]
+      @item.delete
+    end
+  end
 end
