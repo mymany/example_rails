@@ -13,7 +13,10 @@ RSpec.describe "Users", type: :request do
     end
 
     it 'post_user' do
-        req_params = { email: 'dummy_user@example.com' }
+        req_params = {
+            email: 'dummy_user@example.com',
+            password: 'password'
+        }
 
         expect { post "/api/v1/users", params: { user: req_params } }.to change(User, :count).by(+1)
 
