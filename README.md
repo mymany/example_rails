@@ -1,24 +1,33 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+## 開発について
 
-* Ruby version
 
-* System dependencies
+以下のコマンドをコンテナ内で実行する
+```
+bundle exec rails s -p 3000 -b '0.0.0.0'
+```
 
-* Configuration
+### rspec
 
-* Database creation
+- テストケースを指定して実行する
+-- typeをテストケースごとに指定しておく必要がある
 
-* Database initialization
+```
+// example
+rspec ファイルパス -tag type:doing
+```
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+### マイグレーション
+- プロパティの追加
 
-* Deployment instructions
+```
+// example
+rails g migration add_password_digest_to_user password_digest:string
+```
 
-* ...
+## デプロイについて
+
+

@@ -5,7 +5,7 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /v1/user:
+  /v1/users:
     get:
       summary: Your GET endpoint
       tags: []
@@ -24,35 +24,7 @@ paths:
                     name:
                       type: string
       description: ユーザ情報一覧
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  email:
-                    type: string
-                  password:
-                    type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-      description: |-
-        ユーザ作成
-        登録時には1000ポイント付与される
+    parameters: []
   /v1/buy:
     get:
       summary: Your GET endpoint
@@ -199,5 +171,35 @@ paths:
               properties:
                 id:
                   type: integer
+  /v1/user:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+      description: ユーザの作成
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
 components:
   schemas: {}
