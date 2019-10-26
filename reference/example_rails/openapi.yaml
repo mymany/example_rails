@@ -25,6 +25,32 @@ paths:
                       type: string
       description: ユーザ情報一覧
     parameters: []
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  point:
+                    type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
   /v1/buy:
     get:
       summary: Your GET endpoint
@@ -171,35 +197,5 @@ paths:
               properties:
                 id:
                   type: integer
-  /v1/user:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-    post:
-      summary: ''
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
-      description: ユーザの作成
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
 components:
   schemas: {}
