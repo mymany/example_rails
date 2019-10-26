@@ -10,6 +10,7 @@ module Api
 
             def create
                 @user = User.new(user_params)
+                @user.point = User::INITIAL_POINT
                 @user.save
                 render json: @user
             end

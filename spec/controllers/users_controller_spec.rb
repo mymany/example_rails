@@ -23,5 +23,6 @@ RSpec.describe "Users", type: :request do
         @subject_user = JSON.parse(response.body)
         expect(@subject_user["id"]).to be_truthy
         expect(@subject_user["email"]).to be_truthy
+        expect(@subject_user["point"]).to eq User::INITIAL_POINT
     end
 end
