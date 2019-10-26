@@ -50,4 +50,16 @@ RSpec.describe "Items", type: :request do
       @item.delete
     end
   end
+
+  describe "DELETE /items", type: :delete do
+    it "レスポンスのデータが正しいこと" do
+      @item = FactoryBot.create(:item)
+      req_params = {
+        user_id: @item.user.id,
+        name: 'dummy item put',
+        point: 200
+      }
+      expect { delete "/api/v1/items/" + @item.id.to_s }.to change(Item, :count).by(-1)
+    end
+  end
 end
