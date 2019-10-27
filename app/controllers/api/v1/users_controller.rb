@@ -11,8 +11,13 @@ module Api
             def create
                 @user = User.new(user_params)
                 @user.point = User::INITIAL_POINT
-                @user.save
-                render json: @user
+                begin
+                    @user.save!
+                    render json: @user
+                rescue => e
+                    logger.error(e)
+                    render status: :unprocessable_entity, json: {message: e.message }
+                end
             end
 
             private

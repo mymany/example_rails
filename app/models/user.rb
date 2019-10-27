@@ -3,4 +3,6 @@ class User < ApplicationRecord
     has_many :items
     has_many :buys, through: :buys
     INITIAL_POINT = 10000
+    validates :email, presence: true, uniqueness: true
+    validates :password, presence: true
 end
