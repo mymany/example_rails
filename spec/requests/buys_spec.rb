@@ -2,24 +2,33 @@ require 'rails_helper'
 
 RSpec.describe "Buys", type: :request do
     describe "GET /buys", type: :get do
-        context "正常系" do
-            it 'レスポンスのデータが正しいこと' do
-                @buy = FactoryBot.create(:buy)
-                get "/api/v1/buys"
-                @json = JSON.parse(response.body)
-                @subject_buy = @json.first
+        subject { get "/api/v1/buys" }
+        @buy
+        before do
+            @buy = FactoryBot.create(:buy)
+        end
+        after do
+            @buy.delete
+        end
+
+        context "購入履歴が存在するとき" do
+            it "期待するレスポンスのキーが存在する" do
+                subject
+                json = JSON.parse(response.body)
+                @subject_buy = json.first
                 expect(@subject_buy["id"]).to be_truthy
                 expect(@subject_buy["item_id"]).to be_truthy
                 expect(@subject_buy["item_name"]).to be_truthy
                 expect(@subject_buy["user_id"]).to be_truthy
                 expect(@subject_buy["point"]).to be_truthy
-                @buy.delete
             end
-            it "ステータスコードが正しいこと" do
-                # be_success
+            it "ステータスコードが200" do
+                subject
+                expect(response).to have_http_status 200
             end
         end
     end
+
     describe "POST /buys", type: :post do
         context "正常系" do
             it "レスポンスのデータが正しいこと" do
