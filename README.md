@@ -28,6 +28,10 @@ rspec ファイルパス -tag type:doing
 rails g migration add_password_digest_to_user password_digest:string
 ```
 
-## デプロイについて
 
+- scaffold
 
+```
+//example
+rails g scaffold user name email
+```

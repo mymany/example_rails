@@ -51,7 +51,7 @@ paths:
                   type: string
                 password:
                   type: string
-  /v1/buy:
+  /v1/buys:
     get:
       summary: Your GET endpoint
       tags: []
@@ -69,9 +69,13 @@ paths:
                       type: integer
                     item_name:
                       type: string
-                    item_point:
+                    item_id:
                       type: integer
-      description: 購入履歴一覧
+                    user_id:
+                      type: integer
+                    point:
+                      type: integer
+      description: 購入履歴一覧取得API
     post:
       summary: ''
       responses:
@@ -84,7 +88,13 @@ paths:
                 properties:
                   status:
                     type: boolean
-      description: 購入する
+                  item_id:
+                    type: string
+                  user_id:
+                    type: string
+                  point:
+                    type: integer
+      description: 購入API
       requestBody:
         content:
           application/json:
@@ -93,6 +103,9 @@ paths:
               properties:
                 item_id:
                   type: integer
+                user_id:
+                  type: string
+    parameters: []
   /v1/items:
     get:
       summary: Your GET endpoint

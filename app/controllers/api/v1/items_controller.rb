@@ -40,7 +40,6 @@ module Api
             end
 
             def item_params
-                # params.fetch(:item, {:name, :point, :user_id})
                 params.require(:item).permit(:name, :user_id, :point)
             end
         end
