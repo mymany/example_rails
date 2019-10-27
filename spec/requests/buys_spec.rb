@@ -59,7 +59,7 @@ RSpec.describe "Buys", type: :request do
             let(:item_id) { -1 }
             let(:req_params) { {user_id: user.id, item_id: item_id} }
             it { expect{subject}.to change{ Buy.count }.by(0) }
-            it "エラーメッセージ投げること" do
+            it "エラーメッセージを投げること" do
                 subject
                 json = JSON.parse(response.body)
                 expect(json["message"]).to be_truthy
