@@ -2,66 +2,71 @@ require 'rails_helper'
 
 RSpec.describe "Buys", type: :request do
     describe "GET /buys", type: :get do
-        context "正常系" do
-            it 'レスポンスのデータが正しいこと' do
-                @buy = FactoryBot.create(:buy)
-                get "/api/v1/buys"
-                @json = JSON.parse(response.body)
-                @subject_buy = @json.first
-                expect(@subject_buy["id"]).to be_truthy
-                expect(@subject_buy["item_id"]).to be_truthy
-                expect(@subject_buy["item_name"]).to be_truthy
-                expect(@subject_buy["user_id"]).to be_truthy
-                expect(@subject_buy["point"]).to be_truthy
-                @buy.delete
+        subject { get "/api/v1/buys" }
+        @buy
+        before do
+            @buy = FactoryBot.create(:buy)
+        end
+        after do
+            @buy.delete
+        end
+
+        context "購入履歴が存在するとき" do
+            it "期待するキーが存在すること" do
+                subject
+                json = JSON.parse(response.body).first
+                expect(json["id"]).to be_truthy
+                expect(json["item_id"]).to be_truthy
+                expect(json["item_name"]).to be_truthy
+                expect(json["user_id"]).to be_truthy
+                expect(json["point"]).to be_truthy
             end
-            it "ステータスコードが正しいこと" do
-                # be_success
+            it "ステータスコードが200であること" do
+                subject
+                expect(response).to have_http_status 200
             end
         end
     end
+
     describe "POST /buys", type: :post do
-        context "正常系" do
-            it "レスポンスのデータが正しいこと" do
-                @user = FactoryBot.create(:user)
-                @item = FactoryBot.create(:item)
-                req_params = {
-                    user_id: @user.id,
-                    item_id: @item.id,
-                }
-                expect { post "/api/v1/buys", params: { buy: req_params } }.to change(Buy, :count).by(+1)
-                @subject_buy = JSON.parse(response.body)['buy']
-                expect(response).to have_http_status 200
-                expect(@subject_buy["id"]).to be_truthy
-                expect(@subject_buy["status"]).to be_truthy
-                expect(@subject_buy["user_id"]).to eq req_params[:user_id]
-                expect(@subject_buy["item_id"]).to eq req_params[:item_id]
-                expect(@subject_buy["point"]).to eq @item.point
-                @user.delete
-                @item.delete
+        subject{ post "/api/v1/buys", params: { buy: req_params }}
+        context "購入処理が成功したとき" do
+            let(:user) {FactoryBot.create(:user)}
+            let(:item) {FactoryBot.create(:item)}
+            let(:req_params) { {user_id: user.id, item_id: item.id} }
+            it { expect{subject}.to change{ Buy.count }.by(1) }
+            it "期待するキーが存在すること" do
+                subject
+                json = JSON.parse(response.body)['buy']
+                expect(json["id"]).to be_truthy
+                expect(json["status"]).to be_truthy
+                expect(json["user_id"]).to eq req_params[:user_id]
+                expect(json["item_id"]).to eq req_params[:item_id]
+                expect(json["point"]).to eq item.point
             end
             it "ユーザのポイントが減算されていること" do
-                # be_success
+                subject
+                expect(User.find(user.id)[:point]).to eq (user.point - item.point)
             end
             it "ステータスコードが正しいこと" do
-                # be_success
+                subject
+                expect(response).to have_http_status 200
             end
         end
 
-        context "異常系" do
-            it "例外を投げること" do
-                @user = FactoryBot.create(:user)
-                req_params = {
-                    user_id: @user.id,
-                    item_id: -1,
-                }
-                post "/api/v1/buys", params: { buy: req_params }
+        context "購入処理が失敗したとき" do
+            let(:user) { FactoryBot.create(:user) }
+            let(:item_id) { -1 }
+            let(:req_params) { {user_id: user.id, item_id: item_id} }
+            it { expect{subject}.to change{ Buy.count }.by(0) }
+            it "エラーメッセージ投げること" do
+                subject
                 json = JSON.parse(response.body)
                 expect(json["message"]).to be_truthy
-                expect(response).to have_http_status 422
             end
-            it "ステータスコードが正しいこと" do
-                # be_success
+            it "ステータスコードが422であること" do
+                subject
+                expect(response).to have_http_status 422
             end
         end
     end

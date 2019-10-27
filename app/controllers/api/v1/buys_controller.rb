@@ -25,6 +25,7 @@ module Api
                         @buy.save!
                         render "buys/create.json.jbuilder"
                     rescue StandardError => e
+                        logger.error(e)
                         render status: :unprocessable_entity, json: {message: e.message }
                     end
                 end
