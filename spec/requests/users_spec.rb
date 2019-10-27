@@ -11,8 +11,8 @@ RSpec.describe "Users", type: :request do
         after do
             @user.delete
         end
-        context "ユーザが存在するとき" do
-            it "期待するキーが存在すること" do
+        context "既にユーザが存在するとき" do
+            it "レスポンスに期待するキーが存在すること" do
                 subject
                 json = JSON.parse(response.body).first
                 expect(json["id"]).to be_truthy
@@ -27,23 +27,23 @@ RSpec.describe "Users", type: :request do
 
     describe "POST /users", type: :post do
         subject{ post "/api/v1/users", params: { user: req_params }}
-        context "ユーザ作成処理が成功したとき" do
+        context "期待するパラメータでリクエストされたとき" do
             let(:req_params) { {email: Faker::Internet.email, password: Faker::Alphanumeric.alphanumeric(number: 10) } }
 
             it { expect{subject}.to change{ User.count }.by(1) }
-            it '期待するキーが存在すること' do
+            it "レスポンスに期待するキーが存在すること" do
                 subject
                 json = JSON.parse(response.body)
                 expect(json["id"]).to be_truthy
                 expect(json["email"]).to be_truthy
                 expect(json["point"]).to eq User::INITIAL_POINT
             end
-            it "ステータスコードが200であること" do
+            it "ステータスコードが201であること" do
                 subject
-                expect(response).to have_http_status 200
+                expect(response).to have_http_status 201
             end
         end
-        context "ユーザ作成処理が失敗したとき" do
+        context "期待するパラメータでリクエストされなかったとき" do
             let(:req_params) { {email: '', password: '' } }
             it { expect{subject}.to change{ User.count }.by(0) }
             it 'エラーメッセージを投げること' do

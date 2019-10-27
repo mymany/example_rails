@@ -13,7 +13,7 @@ module Api
                 @user.point = User::INITIAL_POINT
                 begin
                     @user.save!
-                    render json: @user
+                    render json: @user, status: :created
                 rescue => e
                     logger.error(e)
                     render status: :unprocessable_entity, json: {message: e.message }

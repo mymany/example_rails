@@ -12,7 +12,7 @@ RSpec.describe "Buys", type: :request do
         end
 
         context "購入履歴が存在するとき" do
-            it "期待するキーが存在すること" do
+            it "レスポンスに期待するキーが存在すること" do
                 subject
                 json = JSON.parse(response.body).first
                 expect(json["id"]).to be_truthy
@@ -30,12 +30,12 @@ RSpec.describe "Buys", type: :request do
 
     describe "POST /buys", type: :post do
         subject{ post "/api/v1/buys", params: { buy: req_params }}
-        context "購入処理が成功したとき" do
+        context "期待するパラメータでリクエストされたとき" do
             let(:user) {FactoryBot.create(:user)}
             let(:item) {FactoryBot.create(:item)}
             let(:req_params) { {user_id: user.id, item_id: item.id} }
             it { expect{subject}.to change{ Buy.count }.by(1) }
-            it "期待するキーが存在すること" do
+            it "レスポンスに期待するキーが存在すること" do
                 subject
                 json = JSON.parse(response.body)['buy']
                 expect(json["id"]).to be_truthy
@@ -48,13 +48,13 @@ RSpec.describe "Buys", type: :request do
                 subject
                 expect(User.find(user.id)[:point]).to eq (user.point - item.point)
             end
-            it "ステータスコードが正しいこと" do
+            it "ステータスコードが201であること" do
                 subject
-                expect(response).to have_http_status 200
+                expect(response).to have_http_status 201
             end
         end
 
-        context "購入処理が失敗したとき" do
+        context "期待するパラメータでリクエストされなかったとき" do
             let(:user) { FactoryBot.create(:user) }
             let(:item_id) { -1 }
             let(:req_params) { {user_id: user.id, item_id: item_id} }

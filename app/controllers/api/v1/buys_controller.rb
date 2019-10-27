@@ -23,7 +23,7 @@ module Api
                         @buy.point = @item.point
                         @user.save!
                         @buy.save!
-                        render "buys/create.json.jbuilder"
+                        render "buys/create.json.jbuilder", status: :created
                     rescue StandardError => e
                         logger.error(e)
                         render status: :unprocessable_entity, json: {message: e.message }
