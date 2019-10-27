@@ -14,13 +14,12 @@ RSpec.describe "Buys", type: :request do
         context "購入履歴が存在するとき" do
             it "期待するキーが存在すること" do
                 subject
-                json = JSON.parse(response.body)
-                @subject_buy = json.first
-                expect(@subject_buy["id"]).to be_truthy
-                expect(@subject_buy["item_id"]).to be_truthy
-                expect(@subject_buy["item_name"]).to be_truthy
-                expect(@subject_buy["user_id"]).to be_truthy
-                expect(@subject_buy["point"]).to be_truthy
+                json = JSON.parse(response.body).first
+                expect(json["id"]).to be_truthy
+                expect(json["item_id"]).to be_truthy
+                expect(json["item_name"]).to be_truthy
+                expect(json["user_id"]).to be_truthy
+                expect(json["point"]).to be_truthy
             end
             it "ステータスコードが200であること" do
                 subject
@@ -38,12 +37,12 @@ RSpec.describe "Buys", type: :request do
             it { expect{subject}.to change{ Buy.count }.by(1) }
             it "期待するキーが存在すること" do
                 subject
-                @subject_buy = JSON.parse(response.body)['buy']
-                expect(@subject_buy["id"]).to be_truthy
-                expect(@subject_buy["status"]).to be_truthy
-                expect(@subject_buy["user_id"]).to eq req_params[:user_id]
-                expect(@subject_buy["item_id"]).to eq req_params[:item_id]
-                expect(@subject_buy["point"]).to eq item.point
+                json = JSON.parse(response.body)['buy']
+                expect(json["id"]).to be_truthy
+                expect(json["status"]).to be_truthy
+                expect(json["user_id"]).to eq req_params[:user_id]
+                expect(json["item_id"]).to eq req_params[:item_id]
+                expect(json["point"]).to eq item.point
             end
             it "ユーザのポイントが減算されていること" do
                 subject
