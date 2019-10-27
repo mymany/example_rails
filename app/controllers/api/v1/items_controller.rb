@@ -31,7 +31,9 @@ module Api
         end
 
         def destroy
-            @item.destroy
+            if @item.destroy
+                render json: {}, status: :ok
+            end
         end
 
         private
