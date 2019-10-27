@@ -2,16 +2,26 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-    describe "GET /users" do
-        it 'get_users' do
+    describe "GET /users", type: :get do
+        subject { get "/api/v1/users" }
+        @user
+        before do
             @user = FactoryBot.create(:user)
-            get "/api/v1/users"
-            @json = JSON.parse(response.body)
-            @subject_user = @json.first
-
-            expect(@subject_user["id"]).to be_truthy
-            expect(@subject_user["email"]).to be_truthy
+        end
+        after do
             @user.delete
+        end
+        context "ユーザが存在するとき" do
+            it "期待するキーが存在すること" do
+                subject
+                json = JSON.parse(response.body).first
+                expect(json["id"]).to be_truthy
+                expect(json["email"]).to be_truthy
+            end
+            it "ステータスコードが200であること" do
+                subject
+                expect(response).to have_http_status 200
+            end
         end
     end
 
