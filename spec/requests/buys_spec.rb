@@ -48,9 +48,9 @@ RSpec.describe "Buys", type: :request do
                 subject
                 expect(User.find(user.id)[:point]).to eq (user.point - item.point)
             end
-            it "ステータスコードが正しいこと" do
+            it "ステータスコードが201であること" do
                 subject
-                expect(response).to have_http_status 200
+                expect(response).to have_http_status 201
             end
         end
 
