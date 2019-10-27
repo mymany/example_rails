@@ -23,3 +23,5 @@
 /config/master.key
 
 mysql/
+mysql/mysql_data/*
+mysql/mysql_data/ib_logfile0
