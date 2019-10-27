@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :item do
-    name { "dummy item" }
+    name { Faker::Name.initials }
     point { 100 }
     association :user
   end
