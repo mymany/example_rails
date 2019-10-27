@@ -14,11 +14,20 @@ module Api
 
         def create
             @buy = Buy.new(buy_params)
-
-            if @buy.save
-                render "buys/create.json.jbuilder"
-            else
-                render json: @buy.errors, status: :unprocessable_entity
+            Buy.transaction do
+                User.transaction do
+                    begin
+                        @user = User.find(buy_params[:user_id])
+                        @item = Item.find(buy_params[:item_id])
+                        @user.point = @user.point - @item.point
+                        @buy.point = @item.point
+                        @user.save!
+                        @buy.save!
+                        render "buys/create.json.jbuilder"
+                    rescue StandardError => e
+                        render status: :unprocessable_entity, json: {message: e.message }
+                    end
+                end
             end
         end
 
