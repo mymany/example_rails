@@ -13,15 +13,19 @@ module Api
         # end
 
         def create
-            @buy = Buy.new(buy_params)
             Buy.transaction do
                 User.transaction do
-                    begin
+                    begin           
+                        @buy = Buy.new(buy_params)
                         @user = User.find(buy_params[:user_id])
                         @item = Item.find(buy_params[:item_id])
-                        @user.point = @user.point - @item.point
+
                         @buy.point = @item.point
+                        @user.point -= @item.point
+                        @item.user.point += @item.point
+                        
                         @user.save!
+                        @item.user.save!
                         @buy.save!
                         render "buys/create.json.jbuilder", status: :created
                     rescue StandardError => e
