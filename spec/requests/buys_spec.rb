@@ -44,10 +44,8 @@ RSpec.describe "Buys", type: :request do
                 expect(json["item_id"]).to eq req_params[:item_id]
                 expect(json["point"]).to eq item.point
             end
-            it "ユーザのポイントが減算されていること" do
-                subject
-                expect(User.find(user.id)[:point]).to eq (user.point - item.point)
-            end
+            it { expect{subject}.to change{ User.find(user.id)[:point] }.by(-item.point) }
+            it { expect{subject}.to change{ User.find(item.user.id)[:point] }.by(+item.point) }
             it "ステータスコードが201であること" do
                 subject
                 expect(response).to have_http_status 201
