@@ -30,9 +30,10 @@ RSpec.describe "Items", type: :request do
 
     describe "POST /items", type: :post do
         subject { post "/api/v1/items", params: { item: req_params }}
+        let(:user) { FactoryBot.create(:user) }
+        let(:valid_item_name) { Faker::Name.initials }
         context "期待するパラメータでリクエストされたとき" do
-            let(:user) { FactoryBot.create(:user) }
-            let(:req_params) { {user_id: user.id, name: Faker::Name.initials, point: 100 } }
+            let(:req_params) { {user_id: user.id, name: valid_item_name, point: 100 } }
             it { expect{subject}.to change{ Item.count }.by(1) }
             it "レスポンスに期待するキーが存在すること" do
                 subject
@@ -48,8 +49,31 @@ RSpec.describe "Items", type: :request do
             end
         end
         context "期待するパラメータでリクエストされなかったとき" do
-            let(:user) { FactoryBot.create(:user) }
-            let(:req_params) { {user_id: -1, name: Faker::Name.initials, point: 100 } }
+            let(:req_params) { {user_id: -1, name: valid_item_name, point: 100 } }
+            it { expect{subject}.to change{ Item.count }.by(0) }
+            it "ステータスコードが422であること" do
+                subject
+                expect(response).to have_http_status 422
+            end
+        end
+        context "期待するパラメータでnameが空文字でリクエストされたとき" do
+            let(:req_params) { {user_id: user.id, name: '', point: 100 } }
+            it { expect{subject}.to change{ Item.count }.by(0) }
+            it "ステータスコードが422であること" do
+                subject
+                expect(response).to have_http_status 422
+            end
+        end
+        context "期待するパラメータでpointが空文字でリクエストされたとき" do
+            let(:req_params) { {user_id: user.id, name: valid_item_name, point: '' } }
+            it { expect{subject}.to change{ Item.count }.by(0) }
+            it "ステータスコードが422であること" do
+                subject
+                expect(response).to have_http_status 422
+            end
+        end
+        context "期待するパラメータでpointが文字列でリクエストされたとき" do
+            let(:req_params) { {user_id: user.id, name: valid_item_name, point: 'one hundred' } }
             it { expect{subject}.to change{ Item.count }.by(0) }
             it "ステータスコードが422であること" do
                 subject
@@ -60,9 +84,11 @@ RSpec.describe "Items", type: :request do
 
     describe "PUT /items", type: :put do
         subject { put "/api/v1/items/" + item.id.to_s, params: { item: req_params }}
+        let(:valid_item_name) { Faker::Name.initials }
+        let(:item) { FactoryBot.create(:item) }
+        let(:valid_item_name) { Faker::Name.initials }
         context "期待するパラメータでリクエストされたとき" do
-            let(:item) { FactoryBot.create(:item) }
-            let(:req_params) { {user_id: item.user.id, name: Faker::Name.initials, point: 100 } }
+            let(:req_params) { {user_id: item.user.id, name: valid_item_name, point: 100 } }
             it "レスポンスに期待するキーが存在すること" do
                 subject
                 json = JSON.parse(response.body)
@@ -84,8 +110,7 @@ RSpec.describe "Items", type: :request do
             end
         end
         context "期待するパラメータでリクエストされなかったとき" do
-            let(:item) { FactoryBot.create(:item) }
-            let(:req_params) { {user_id: -1, name: Faker::Name.initials, point: 100 } }
+            let(:req_params) { {user_id: -1, name: valid_item_name, point: 100 } }
             it "ステータスコードが422であること" do
                 subject
                 expect(response).to have_http_status 422
