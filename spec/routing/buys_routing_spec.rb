@@ -1,6 +1,6 @@
-require "rails_helper"
+# require "rails_helper"
 
-RSpec.describe BuysController, type: :routing do
+# RSpec.describe BuysController, type: :routing do
   # describe "routing" do
   #   it "routes to #index" do
   #     expect(:get => "/buys").to route_to("buys#index")
@@ -27,4 +27,4 @@ RSpec.describe BuysController, type: :routing do
   #     expect(:delete => "/buys/1").to route_to("buys#destroy", :id => "1")
   #   end
   # end
-end
+# end
