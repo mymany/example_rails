@@ -5,7 +5,7 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /v1/user:
+  /v1/users:
     get:
       summary: Your GET endpoint
       tags: []
@@ -24,6 +24,7 @@ paths:
                     name:
                       type: string
       description: ユーザ情報一覧
+    parameters: []
     post:
       summary: ''
       responses:
@@ -38,8 +39,8 @@ paths:
                     type: integer
                   email:
                     type: string
-                  password:
-                    type: string
+                  point:
+                    type: integer
       requestBody:
         content:
           application/json:
@@ -50,10 +51,7 @@ paths:
                   type: string
                 password:
                   type: string
-      description: |-
-        ユーザ作成
-        登録時には1000ポイント付与される
-  /v1/buy:
+  /v1/buys:
     get:
       summary: Your GET endpoint
       tags: []
@@ -71,9 +69,13 @@ paths:
                       type: integer
                     item_name:
                       type: string
-                    item_point:
+                    item_id:
                       type: integer
-      description: 購入履歴一覧
+                    user_id:
+                      type: integer
+                    point:
+                      type: integer
+      description: 購入履歴一覧取得API
     post:
       summary: ''
       responses:
@@ -86,7 +88,13 @@ paths:
                 properties:
                   status:
                     type: boolean
-      description: 購入する
+                  item_id:
+                    type: string
+                  user_id:
+                    type: string
+                  point:
+                    type: integer
+      description: 購入API
       requestBody:
         content:
           application/json:
@@ -95,7 +103,10 @@ paths:
               properties:
                 item_id:
                   type: integer
-  /v1/item:
+                user_id:
+                  type: string
+    parameters: []
+  /v1/items:
     get:
       summary: Your GET endpoint
       tags: []
@@ -115,6 +126,8 @@ paths:
                       type: string
                     point:
                       type: integer
+                    user_id:
+                      type: string
       description: アイテムの出品
       requestBody: {}
     post:
@@ -122,6 +135,19 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  point:
+                    type: integer
+                  user_id:
+                    type: integer
         '201':
           description: Created
           content:
@@ -150,6 +176,7 @@ paths:
                 point:
                   type: string
       description: 商品登録
+    parameters: []
     put:
       summary: ''
       responses:
@@ -160,44 +187,46 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                  point:
+                  user_id:
                     type: integer
                   name:
                     type: string
-      description: アイテム編集
+                  point:
+                    type: integer
+                  id:
+                    type: integer
+      description: 商品の更新
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: item_id
+          required: true
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                point:
+                user_id:
                   type: integer
                 name:
                   type: string
+                point:
+                  type: integer
+        description: ''
     delete:
       summary: ''
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: boolean
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
+      description: 商品の削除
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: item_id
+          description: ''
+          required: true
 components:
   schemas: {}
